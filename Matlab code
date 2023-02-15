@@ -1,0 +1,186 @@
+1A)
+A=imread('C:/Users/FbMmm/OneDrive/Masaüstü/goruntu isleme/Lena.jpg');
+img=rgb2gray(A);
+
+m1 = 0.15; sig1 = 0.05; m2 = 0.75; sig2 = 0.05; A1 = 1;A2 = 0.07; k= -0.002; 
+c1 = A1 * (1 / ( ( 2 * pi ) * 0.5)*sig1); 
+k1= 2*(sig1 ^2); 
+c2= A2 * (1/ ((2 * pi)* 0.5)*sig2); 
+k2= 2*(sig2 ^2); 
+z=linspace(0, 1, 256); 
+p=k+c1*exp(-((z-m1).^2./k1))+c2*exp(-((z-m2).^2./k2)); 
+p=p./sum(p(:)); 
+graph=histeq(img,p); 
+subplot(1,2,1),subimage(img);title('Orijinal Resim'); 
+subplot(1,2,2),subimage(graph);title('Histogramı eşitlenmiş Resim');
+
+1B)
+cf=ffshift(fft2(img));
+[x,y]=meshgrid(-128:127, 128:127);
+bl=1./(1+((x.^2+y^.2)/15).^2;
+cfbl=cf.*bl;
+bc=ifft2(cfbl);
+imshow(uint8(abs(b)))
+
+1C)
+C=double(img); 
+for i=1:size(C,1)-2 
+for j=1:size(C,2)-2 
+%Sobel mask for x-direction: 
+Gx=((2*C(i+2,j+1)+C(i+2,j)+C(i+2,j+2))-(2*C(i,j+1)+C(i,j)+C(i,j+2))); 
+%Sobel mask for y-direction: 
+Gy=((2*C(i+1,j+2)+C(i,j+2)+C(i+2,j+2))-(2*C(i+1,j)+C(i,j)+C(i+2,j))); 
+%The gradient of the image 
+B(i,j)=sqrt(Gx.^2+Gy.^2); 
+end 
+end 
+figure 
+imshow(B); 
+title('Sobel gradient');
+
+ 1D)
+log=fspecial('log',13,2); 
+icz=edge(img,'zerocross',log);
+ imshow(icz)
+
+
+
+1E)
+rgbImage = ind2rgb(img, colormap);
+# gray = uint8(bw*255); gray = double(bw);
+Veya 
+B=ntsc2rgb(img)
+Imshow(rgbImage);
+Hsi=rgb2hsv(rgbImage);
+Imshow(Hsi)
+VEYA 
+I=double(A)/255;
+
+R=I(:,:,1);
+G=I(:,:,2);
+B=I(:,:,3);
+
+%Hue
+numi=1/2*((R-G)+(R-B));
+denom=((R-G).^2+((R-B).*(G-B))).^0.5;
+
+%To avoid divide by zero exception add a small number in the denominator
+H=acosd(numi./(denom+0.000001));
+
+%If B>G then H= 360-Theta
+H(B>G)=360-H(B>G);
+
+%Normalize to the range [0 1]
+H=H/360;
+
+%Saturation
+S=1- (3./(sum(I,3)+0.000001)).*min(I,[],3);
+
+
+%Intensity
+I=sum(I,3)./3;
+
+
+%HSI
+HSI=zeros(size(A));
+HSI(:,:,1)=H;
+HSI(:,:,2)=S;
+HSI(:,:,3)=I;
+
+
+
+figure,imshow(HSI);title('HSI Image');
+
+1F)
+AÇMA
+t=strel('square',50);
+f_open = imopen(img,t);
+figure, imshow(f_open)
+
+KAPAMA:
+f_close = imclose(img,t);
+figure, imshow(f_close)
+
+
+
+2-
+BUTUNSEL ESİTLEME:
+a=’adres’
+T= graythresh(a); 
+d=im2bw(a,T); 
+figure 
+imshow(d);
+CİFT ESİKLEME:
+[x,map]=imread('cameraman.tif'); 
+s=x;
+imshow(s>115)
+
+eger siyah beyazda sorun olursa
+son = logical(1 - d)
+imshow(son)
+
+3-)
+24 bit RGB fotoğraf verisi her zaman piksel başına 3 bayttır
+3A)
+A=[1 1 7 1 6;6 5 2 0 6;6 3 4 0 0;6 7 7 7 4];
+b=ind2rgb(A);
+imhist(b)
+3B)
+x=-4:0.01:4;
+ s=1/sqrt(2*pi); 
+y=s*exp(-0.5*x.^2); 
+plot(x,y)
+
+veya
+[r c]=size(b);
+pix_prob_normal=imhist(b)./(r*c); 
+plot(0:255,pix_prob_normal);
+xlabel('Gray Levels');
+ylabel('Pixels Probability');
+
+veya 
+data = [1 2 3 3 4];
+ N = histcounts(data, 'BinLimits', [0 10], 'BinMethod', 'integers', 'Normalization', 'pdf');
+ plot(N); xlabel('Integer value'); ylabel('Probability'); 
+
+CUMSUM:
+cdf = cumsum(N)/sum(N);
+imshow(cdf)
+ VEYA
+x = randn(1000,1);
+nbins = 25;
+h = histogram(x,nbins);
+hNormalized = h.Values / sum(h.Values);
+cdf = cumsum(hNormalized);
+
+Kümülatif Dağılım Fonksiyonu
+•	Veri = cdf(‘Normal’,serininadı,0,1);
+Olasılık Dağılım Fonksiyonu
+•	Veri = pdf(‘Normal’,serininadı,0,1);
+
+
+4-)
+a)
+A=[1 11 17 1 16 6 6 6;6 54 2 0 60 6 6 62;6 3 42 0 0 0 0 0 ;60 72 7 7 4 42 4 48;10 24 56 12 12 12 12 12; 3 72 34 24 56 78 2 24] 
+imhist(A)
+
+
+b) T=medfilt2(A,[3 3]);
+imshow(T(3,4));
+c)
+A=[1 11 17 1 16 6 6 6;6 54 2 0 60 6 6 62;6 3 42 0 0 0 0 0 ;60 72 7 7 4 42 4 48;10 24 56 12 12 12 12 12; 3 72 34 24 56 78 2 24] 
+
+lap=[0 2 0; 2 -8 2;0 2 0]
+output=imfilter(A,lap);
+imshow(T(3,4));
+d)
+A=[1 11 17 1 16 6 6 6;6 54 2 0 60 6 6 62;6 3 42 0 0 0 0 0 ;60 72 7 7 4 42 4 48;10 24 56 12 12 12 12 12; 3 72 34 24 56 78 2 24] 
+
+low_pass=[0.05 0.50 0.05;0.50 2.80 0.50;0.05 0.50 0.05]
+output=imfilter(A,low_pass);
+imshow(T(3,4));
+
+
+
+
+
